@@ -108,6 +108,7 @@ function checkWinner(totalScore) {
 	var winningScore = document.querySelector('.btn-change').value;
 	if(totalScore >= winningScore) {
 		// window.alert("the winner is player" + (Number(activePlayer) + 1));
+		document.querySelector('#score-' + activePlayer).textContent = score[activePlayer];
 		document.querySelector('#name-' + activePlayer).textContent = 'WINNER';
 		document.querySelector('.dice').style.display = 'none';
         document.querySelector('.player-' + activePlayer + '-panel').classList.add('winner');
