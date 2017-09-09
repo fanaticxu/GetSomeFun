@@ -154,7 +154,22 @@ i {
 }
 
 .btn-new { top: 45px;}
-.btn-change {top: 75px; text-align: center;}
+.winningScore {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    /*top: 520px;*/
+    top: 75px; 
+    color: #555;
+    font-size: 17px;
+    font-family: 'Lato';
+    text-align: center;
+    padding: 10px;
+    width: 160px;
+    text-transform: uppercase;
+
+
+}
 .btn-roll { top: 403px;}
 .btn-hold { top: 467px;}
 
