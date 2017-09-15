@@ -195,6 +195,12 @@ var UIController = (function() {
 
 	};
 
+		var nodeListForEach = function(list, callback) {
+		for (var i = 0; i < list.length;  i++) {
+			callback(list[i], i);
+		}
+	};
+
 	return {
 		getinput: function(){
 			return {
@@ -275,13 +281,6 @@ var UIController = (function() {
 		displayPercentages: function(percentages) {
 			var fields = document.querySelectorAll(DOMString.expensesPercLabel);
 
-			var nodeListForEach = function(list, callback) {
-				for (var i = 0; i < list.length;  i++) {
-					callback(list[i], i);
-				}
-			}
-
-
 			nodeListForEach(fields, function(current, index){
 				if (percentages[index] > 0) {
 					current.textContent = percentages[index] + '%';	
@@ -305,6 +304,20 @@ var UIController = (function() {
 			// day = today.getDate();
 			document.querySelector(DOMString.dateLabel).textContent = months[month] + ' ' + year;
 
+		},
+		// change the color of the bolder when we select + or -
+		changeType: function() {
+			var fields = document.querySelectorAll(
+				DOMString.inputType + ',' +
+				DOMString.inputDescription + ',' +
+				DOMString.inputValue);
+
+			nodeListForEach(fields, function(arr){
+				//use classList to add or remove or toggle class in html
+				arr.classList.toggle('red-focus');
+			});
+
+			document.querySelector(DOMString.inputButton).classList.toggle('red');
 		},
 
 		getDOMstrings: function(){
@@ -336,6 +349,7 @@ var controller = (function(budgetCtrl, UICtrl){
 		});
 
 		document.querySelector(DOM.container).addEventListener('click', ctrlDeleteItem);
+		document.querySelector(DOM.inputType).addEventListener('change',UICtrl.changeType);
 	};
 
 	var updateBudget = function() {
