@@ -44,6 +44,7 @@ var budgetController = (function() {
                 newItem = new Expense(id, desc, value);
             }
             data.allItem[type].push(newItem);
+            return newItem;
         },
 
 
@@ -64,7 +65,8 @@ var UIController = (function() {
         inputType: '.add__type',
         inputDescription: '.add__description',
         inputValue: '.add__value',
-        incomeList: '.income__list'
+        incomeList: '.income__list',
+        expenseList: '.expenses__list'
     }
     
     
@@ -79,19 +81,44 @@ var UIController = (function() {
             
         },
 
-        addListItem: function(obj) {
-            var HTML;
-            // put it into UI controller
+        addListItem: function(obj, type) {
+            var html, element, newHtml;
+            if(type === 'inc') {
+                element = DOMString.incomeList;
+                html = '<div class="item clearfix" id="inc-%id%"><div class="item__description">%desc%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>' 
+            } else if(type === 'exp') {
+                element = DOMString.expenseList;
+                html = '<div class="item clearfix" id="exp-%id%"><div class="item__description">%desc%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>'
+            }
 
+            newHtml = html.replace('%id%', obj.id);
+            newHtml = newHtml.replace('%desc%', obj.desc);
+            newHtml = newHtml.replace('%value%', obj.value);
+            document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
             
-            document.querySelector(DOMString.incomeList).insertAdjacentHTML('beforeend', HTML);
+        },
 
+        clearField: function() {
 
-            // if(obj.type === 'inc' && obj.description !== '' && obj.value > 0) {
-            // } else if(obj.type == 'exp' && obj.description !== '' && obj.value > 0) {
-                
-            // }
-            
+            // solution 1
+            // document.querySelector(DOMString.inputDescription).value = '';
+            // document.querySelector(DOMString.inputValue).value = '';
+            // document.querySelector(DOMString.inputDescription).focus();
+
+            // solution 2
+            var fields, fieldsArr;
+			// Use querySelectorALl to get a NodeList containing all of the matching Element nodes within the node’s subtrees, in document order. 
+			fields = document.querySelectorAll(DOMString.inputDescription + ', ' + DOMString.inputValue);
+			//convert fileds(NodeList to an array),
+			// fieldsArr = Array.prototype.slice.call(fields);
+			// console.log(fields);
+			// console.log(fieldsArr);
+			// console.log(fields === fieldsArr);
+			fields.forEach(function(arr) {
+				arr.value = '';
+			});
+
+			fields[0].focus();
         },
 
         getDOMString: function() {
@@ -121,11 +148,20 @@ var controller = (function(budgetCtrl, UICtrl) {
 
     var ctrlAddItem = function() {
         // console.log('clicked');
+        var newItem;
         //1. get input value
         input = UICtrl.getInput();
-        //2. save the input value
-        budgetCtrl.addItem(input.type, input.description, input.value);
-        //3. print on the screen
+        if(input.description !== '' && input.value > 0) {
+            //2. save the input value
+            newItem = budgetCtrl.addItem(input.type, input.description, input.value);
+            console.log(newItem);
+            //3. print on the screen
+            UICtrl.addListItem(newItem, input.type);
+            //4. clear the input box
+            UICtrl.clearField();
+        }
+
+
     }
     
     return {
