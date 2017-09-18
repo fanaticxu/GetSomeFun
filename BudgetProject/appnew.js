@@ -33,8 +33,9 @@ var budgetController = (function() {
             sum += parseFloat(val.value);
         });
         data.totals[type] = sum;
-        console.log(data.totals[type]);
     }
+
+
 
     return {
         addItem: function(type, desc, value) {
@@ -67,6 +68,22 @@ var budgetController = (function() {
                 totalExp: data.totals.exp
             }
         },
+
+        deleteItem: function(type, delId) {
+            //find the deleteID
+            var ids, delIndex;
+
+            ids = data.allItem[type].map(function(val){
+                return val.id;                
+            });
+            
+            delIndex = ids.indexOf(delId);
+            console.log('delIndex: ' + delIndex);
+            //delete it in the database
+            if(delIndex !== -1) {
+                data.allItem[type].splice(delIndex,1);
+            }
+        },
                 
 
         testing: function() {
@@ -86,7 +103,8 @@ var UIController = (function() {
         expenseList: '.expenses__list',
         budgetLabel: '.budget__value',
         totalIncomeLabel: '.budget__income--value',
-        totalExpensesLabel: '.budget__expenses--value'
+        totalExpensesLabel: '.budget__expenses--value',
+        container: '.container'
     }
     
     
@@ -146,6 +164,11 @@ var UIController = (function() {
 			fields[0].focus();
         },
 
+        deleteListItem: function(selectID) {
+            var el = document.getElementById(selectID);
+            el.parentNode.removeChild(el);
+        },
+
         getDOMString: function() {
             return DOMString;
         },
@@ -172,12 +195,19 @@ var controller = (function(budgetCtrl, UICtrl) {
     }
     
     var setupEventListeners = function() {
+        // event listener for input button
         document.querySelector(DOM.inputButton).addEventListener('click', ctrlAddItem);
         document.addEventListener('keypress', function(value){
             if(parseInt(value.keyCode) === 13) {
                 ctrlAddItem();
             }
         });
+
+        // event listener for del button
+        // document.querySelector(DOM.container).addEventListener('click', function(event){
+        //     console.log(event.target);
+        // });
+        document.querySelector(DOM.container).addEventListener('click', ctrlDeleteItem);
     }
 
 
@@ -198,8 +228,20 @@ var controller = (function(budgetCtrl, UICtrl) {
             updateBudget();
             
         }
+    }
 
-
+    var ctrlDeleteItem = function(event) {
+        // find the id of the delete item
+        var itemID, itemArr;
+        // delete it in data obj
+        itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
+        itemArr = itemID.split('-');
+        console.log(itemArr[0], itemArr[1]);
+        budgetCtrl.deleteItem(itemArr[0], parseInt(itemArr[1]));
+        //update the budget result
+        updateBudget();
+        // delete it in ui
+        UICtrl.deleteListItem(itemID);
     }
     
     return {
