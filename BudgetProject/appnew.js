@@ -295,13 +295,16 @@ var controller = (function(budgetCtrl, UICtrl) {
         var itemID, itemArr;
         // delete it in data obj
         itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
-        itemArr = itemID.split('-');
-        console.log(itemArr[0], itemArr[1]);
-        budgetCtrl.deleteItem(itemArr[0], parseInt(itemArr[1]));
-        //update the budget result
-        updateBudget();
-        // delete it in ui
-        UICtrl.deleteListItem(itemID);
+        if(itemID) {
+            itemArr = itemID.split('-');
+            console.log(itemArr[0], itemArr[1]);
+            budgetCtrl.deleteItem(itemArr[0], parseInt(itemArr[1]));
+            //update the budget result
+            updateBudget();
+            // delete it in ui
+            UICtrl.deleteListItem(itemID);
+        }
+
     }
     
     return {
