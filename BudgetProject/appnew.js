@@ -137,7 +137,8 @@ var UIController = (function() {
         totalExpensesLabel: '.budget__expenses--value',
         container: '.container',
         totalPercLabel: '.budget__expenses--percentage',
-        itemPercLabel: '.item__percentage'
+        itemPercLabel: '.item__percentage',
+        currentMonth: '.budget__title--month'
     }
     
     var nodeListForEach = function(val, callback){
@@ -152,15 +153,12 @@ var UIController = (function() {
         newNum = newNum.toFixed(2);
         newNum = newNum.split('.');
         int = newNum[0];
-        console.log(int);
         dec = newNum[1];
         commaNum = '';
         while(int.length > 3) {
             commaNum = ',' + int.substr(int.length - 3, 3) + commaNum;
             int = int.substr(0, int.length - 3);
         }
-        console.log(commaNum);
-        console.log(int);
         return (type === 'exp' ? '-' : '+') + ' ' + int + commaNum + '.' + dec;
     };
 
@@ -199,6 +197,15 @@ var UIController = (function() {
             });
         },
 
+        displayMonth: function() {
+            var element = document.querySelector(DOMString.currentMonth);
+            var dateStr = new Date();
+            var Months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            var currentDate;
+            currentDate = Months[dateStr.getMonth()] + ' ' + dateStr.getFullYear();
+            element.textContent = currentDate;
+        },
+
         addListItem: function(obj, type) {
             var html, element, newHtml;
             if(type === 'inc') {
@@ -226,7 +233,7 @@ var UIController = (function() {
             // solution 2
             var fields, fieldsArr;
 			// Use querySelectorALl to get a NodeList containing all of the matching Element nodes within the node’s subtrees, in document order. 
-			fields = document.querySelectorAll(DOMString.inputDescription + ', ' + DOMString.inputValue);
+			fields = document.querySelectorAll(DOMString.inputDescription + ',' + DOMString.inputValue);
 			//convert fileds(NodeList to an array),
 			// fieldsArr = Array.prototype.slice.call(fields);
 			// console.log(fields);
@@ -242,6 +249,22 @@ var UIController = (function() {
         deleteListItem: function(selectID) {
             var el = document.getElementById(selectID);
             el.parentNode.removeChild(el);
+        },
+
+        changeType: function() {
+            var input = document.querySelectorAll(
+                            DOMString.inputType + ',' +
+                            DOMString.inputDescription + ',' +
+                            DOMString.inputValue);
+
+            nodeListForEach(input, function(val, i){
+                val.classList.toggle('red-focus');
+            });
+
+            var button = document.querySelector(DOMString.inputButton);
+
+            button.classList.toggle('red');
+
         },
 
         getDOMString: function() {
@@ -290,6 +313,7 @@ var controller = (function(budgetCtrl, UICtrl) {
         //     console.log(event.target);
         // });
         document.querySelector(DOM.container).addEventListener('click', ctrlDeleteItem);
+        document.querySelector(DOM.inputType).addEventListener('change', UICtrl.changeType);
     }
 
 
@@ -335,6 +359,7 @@ var controller = (function(budgetCtrl, UICtrl) {
             setupEventListeners();
             //init budget income and outcome label to 0
             updateBudget();
+            UICtrl.displayMonth();
         }
     }
 })(budgetController, UIController);
