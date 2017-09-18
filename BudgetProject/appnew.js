@@ -146,6 +146,24 @@ var UIController = (function() {
         }
     }
     
+    var formatNumber = function(num, type) {
+        var newNum, int, dec, commaNum;
+        newNum = Math.abs(num);
+        newNum = newNum.toFixed(2);
+        newNum = newNum.split('.');
+        int = newNum[0];
+        console.log(int);
+        dec = newNum[1];
+        commaNum = '';
+        while(int.length > 3) {
+            commaNum = ',' + int.substr(int.length - 3, 3) + commaNum;
+            int = int.substr(0, int.length - 3);
+        }
+        console.log(commaNum);
+        console.log(int);
+        return (type === 'exp' ? '-' : '+') + ' ' + int + commaNum + '.' + dec;
+    };
+
     return {
         getInput: function() {
             return {
@@ -156,9 +174,13 @@ var UIController = (function() {
             
         },
         displayBudget: function(budget, totalInc, totalExp, totalPerc) {
-            document.querySelector(DOMString.budgetLabel).textContent = budget; 
-            document.querySelector(DOMString.totalIncomeLabel).textContent = totalInc;
-            document.querySelector(DOMString.totalExpensesLabel).textContent = totalExp;
+            if(budget >= 0) {
+                document.querySelector(DOMString.budgetLabel).textContent = formatNumber(budget, 'inc');                 
+            } else {
+                document.querySelector(DOMString.budgetLabel).textContent = formatNumber(budget, 'exp');
+            }
+            document.querySelector(DOMString.totalIncomeLabel).textContent = formatNumber(totalInc, 'inc');
+            document.querySelector(DOMString.totalExpensesLabel).textContent = formatNumber(totalExp, 'exp');
             if(totalPerc === -1) {
                 document.querySelector(DOMString.totalPercLabel).textContent = '---';            
             } else if(totalPerc > 0) {
@@ -189,7 +211,7 @@ var UIController = (function() {
 
             newHtml = html.replace('%id%', obj.id);
             newHtml = newHtml.replace('%desc%', obj.desc);
-            newHtml = newHtml.replace('%value%', obj.value);
+            newHtml = newHtml.replace('%value%', formatNumber(obj.value, type));
             document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
             
         },
