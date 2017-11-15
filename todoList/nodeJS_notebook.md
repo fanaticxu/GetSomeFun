@@ -89,6 +89,19 @@ There are two primary ways to install MongoDB on a Mac. The best way to install 
 *   **Run the Mongo shell**, with the Mongo daemon running in one terminal, type `~/mongodb/bin/mongo` in another terminal window. This will run the Mongo shell which is an application to access data in MongoDB.
 *   **To exit the Mongo shell** run `quit()`
 *   **To stop the Mongo daemon** hit `ctrl-c`
+*   **Install mongoose** in you terminal window, enter project folder, run `npm install mongoose --save `
+
+
+
+
+
+
+
+
+
+
+
+
 
 Tips
 ```
