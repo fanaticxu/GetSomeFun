@@ -17,4 +17,28 @@ router.get('/', function(req, res){
     }) 
 });
 
+router.post('/', function(req, res){
+    // body-parser will convert the req.body from string to json object 
+    db.Todo.create(req.body)
+    // if we use postman to post message .then will send back the whole body of data to postman
+    /* e.g.
+        {
+            "__v": 0,
+            "name": "go back home",
+            "_id": "5a0c1cba05c257095dd4c844",
+            "created_date": "2017-11-15T10:53:46.692Z",
+            "completed": false
+        }
+    */
+    .then(function(newTodo){
+        //http status 201 means created, the status of the send back message will set to 201
+        res.status(201).json(newTodo);
+    })
+    .catch(function(err){
+        res.send(err);
+    })
+});
+
+
+
 module.exports = router;
