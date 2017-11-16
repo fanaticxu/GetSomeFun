@@ -53,5 +53,19 @@ router.get('/:todoId', function(req, res){
     })
 });
 
+// PUT part, to update a todo.
+// When you check off a todo, you're actually sending a request in our to do app
+// it's generating AJAX call sending a request to change the completed status
+router.put('/:todoId', function(req, res){
+    // new: true will responding with the updated version, todo in .then will be the updated todo.
+    db.Todo.findOneAndUpdate({_id: req.params.todoId}, req.body, {new: true})
+    .then(function(todo){
+        res.json(todo);
+    })
+    .catch(function(err){
+        res.send(err);
+    })
+}); 
+
 
 module.exports = router;
