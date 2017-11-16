@@ -39,6 +39,19 @@ router.post('/', function(req, res){
     })
 });
 
+// :todoId is like a placeholder, it defines something as a path variable
+// it will match anything after /todos/api/ e.g. /todos/api/saldfjahsdklfh
+router.get('/:todoId', function(req, res){
+    // req.params.[placeholder] will get the actual input string of the placeholder
+    console.log(req.params);
+    db.Todo.findById(req.params.todoId)
+    .then(function(foundTodo){
+        res.json(foundTodo);
+    })
+    .catch(function(err){
+        console.log(err);
+    })
+});
 
 
 module.exports = router;
