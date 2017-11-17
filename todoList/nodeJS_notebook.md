@@ -113,3 +113,23 @@ app.get('/', function(req, res){
 });
 
 ```
+
+## Use getJSON.then
+Let's say we want to create a wrapper object for the HipsterJesus API. We'll add a method, html, to return the HTML data that comes down from the API. Rather than having this method take in a handler that's called when the request is resolved, we can just have the method return a promise object.
+```
+var hipsterJesus = {
+  html: function() {
+    return $.getJSON('http://hipsterjesus.com/api/').then(function(data) {
+      return data.text;
+    });
+  }
+};
+```
+The cool thing about this is we can pass around our promise object without worrying about when or how it resolves its value. Any code that needs the return value of the promise can just register a callback with done.
+
+The then method allows us to modify the result of a promise and pass it to the next handler in the chain. This means we can now use our new API like this:
+```
+hipsterJesus.html().done(function(html) {
+  $("body").append(html);
+});
+```
