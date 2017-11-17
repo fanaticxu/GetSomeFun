@@ -25,7 +25,7 @@ app.listen(port, function(){
 
 ```
 
-# MongoDB part
+# MongoDB
 ## What’s MongoDB?
 
 MongoDB is a document database which belongs to a family of databases called NoSQL - not only SQL. In MongoDB, records are documents which behave a lot like JSON objects in JavaScript. Values in documents can be looked up by their field’s key. Documents can have some fields/keys and not others, which makes Mongo extremely flexible.

@@ -18,15 +18,16 @@ $(document).ready(function(){
 
 
     // add event listener to each li
-    $('.list').on('click', function(event){
-        var todoValuePlusX = event.target.innerText;
-        var arr = todoValuePlusX.split(' ');
-        arr.splice(-1, 1);
-        var todoValue = arr.join(' ');
+    $('.list').on('click', 'li', function(event){
+        // updateTodoStatus($(this));
+        // var todoValuePlusX = event.target.innerText;
+        // var arr = todoValuePlusX.split(' ');
+        // arr.splice(-1, 1);
+        // var todoValue = arr.join(' ');
         
         // console.log(arr.splice(-1, 1)); // delete the last item of array but return the delete item
         // console.log(arr); // print new arr
-        // toggleCrossTodo(todoValue);
+        toggleCrossTodo($(this));
     });
 
     //     add delete button listener
@@ -36,31 +37,56 @@ $(document).ready(function(){
     //     console.log("clicked");
     // });
     // We need to add event listener to parent tags
-    $('.list').on('click', 'span', function(){
+    $('.list').on('click', 'span', function(e){
+        // this function stop bubbling up the event chain
+        e.stopPropagation();
         deleteTodo($(this).parent());
     });
 
 
 });
 
-// function toggleCrossTodo(name) {
-//     $.ajax({
-//         url: '/api/todos',
-//         method: 'put',
+function toggleCrossTodo(todoTag) {
+    var todoId = todoTag.data('id');
+    var isTodoCompleted;
+    $.getJSON(`/api/todos/${todoId}`)
+    .done(function(data){
+        isTodoCompleted = data.completed;
+        console.log(isTodoCompleted);
+        
+    })
+    .then(function(){
+        $.ajax({
+            url: `/api/todos/${todoId}`,
+            method: 'put',
+            data: {'completed': !isTodoCompleted}
+        })
+        .then(function(data){
+            console.log(data);
+        })
+    })
+    .then(function(){
+        todoTag.toggleClass('done');
+    });
 
-//     })
-// }
+}
+
+function updateTodoStatus(todoTag) {
+    var todoId = todoTag.data('id');
+    console.log(todoId);
+}
+
 function deleteTodo(parentTag) {
     var todoId = parentTag.data('id');
     
-    // select the parent tag of span and remove the whole li line 
-    parentTag.remove();
+
     $.ajax({
         method: 'DELETE',
         url:`/api/todos/${todoId}`
     })
     .then(function(data){
-        console.log(data);
+        // select the parent tag of span and remove the whole li line 
+        parentTag.remove();
     })
     .catch(function(err){
         console.log(err);
@@ -79,6 +105,7 @@ function addTodo(todo) {
     var newTodo = $('<li class = "task">' + todo.name + ' <span>X</span></li>');
     // jQuery method, to save hidden data into a tag we create before.
     newTodo.data('id', todo._id);
+    newTodo.data('completed', todo.completed);
     // add line cross effect to those tasks been done.
     if(todo.completed){
         newTodo.addClass("done");
