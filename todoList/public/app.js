@@ -14,7 +14,58 @@ $(document).ready(function(){
             createTodo();
         }
     });
+
+
+
+    // add event listener to each li
+    $('.list').on('click', function(event){
+        var todoValuePlusX = event.target.innerText;
+        var arr = todoValuePlusX.split(' ');
+        arr.splice(-1, 1);
+        var todoValue = arr.join(' ');
+        
+        // console.log(arr.splice(-1, 1)); // delete the last item of array but return the delete item
+        // console.log(arr); // print new arr
+        // toggleCrossTodo(todoValue);
+    });
+
+    //     add delete button listener
+    // !!! code wont work due to event delegation
+    // !!! code add the very beginning when the page loads and their is no guarantee that any span's are actually there.
+    // $('span').on('click', function(event){
+    //     console.log("clicked");
+    // });
+    // We need to add event listener to parent tags
+    $('.list').on('click', 'span', function(){
+        deleteTodo($(this).parent());
+    });
+
+
 });
+
+// function toggleCrossTodo(name) {
+//     $.ajax({
+//         url: '/api/todos',
+//         method: 'put',
+
+//     })
+// }
+function deleteTodo(parentTag) {
+    var todoId = parentTag.data('id');
+    
+    // select the parent tag of span and remove the whole li line 
+    parentTag.remove();
+    $.ajax({
+        method: 'DELETE',
+        url:`/api/todos/${todoId}`
+    })
+    .then(function(data){
+        console.log(data);
+    })
+    .catch(function(err){
+        console.log(err);
+    });
+}
 
 function addTodos(todos) {
     //add todos to page here
@@ -25,7 +76,9 @@ function addTodos(todos) {
 
 function addTodo(todo) {
     // make li tag with todo.name print
-    var newTodo = $('<li class = "task">' + todo.name + '</li>')
+    var newTodo = $('<li class = "task">' + todo.name + ' <span>X</span></li>');
+    // jQuery method, to save hidden data into a tag we create before.
+    newTodo.data('id', todo._id);
     // add line cross effect to those tasks been done.
     if(todo.completed){
         newTodo.addClass("done");
