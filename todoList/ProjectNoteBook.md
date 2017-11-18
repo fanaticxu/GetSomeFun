@@ -12,7 +12,8 @@
 	
 ### DOM manipulation
 
-*   collection 1
+* collection 1.  
+**propagation and event bubbling**
 HTML
 ```
 <ul class="list">

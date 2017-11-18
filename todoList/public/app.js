@@ -48,25 +48,18 @@ $(document).ready(function(){
 
 function toggleCrossTodo(todoTag) {
     var todoId = todoTag.data('id');
-    var isTodoCompleted;
-    $.getJSON(`/api/todos/${todoId}`)
-    .done(function(data){
-        isTodoCompleted = data.completed;
-        console.log(isTodoCompleted);
-        
+    var flipTodoState = !todoTag.data('completed');
+    var updateData = {completed: flipTodoState};
+    // update todoState to db
+    $.ajax({
+        url: `/api/todos/${todoId}`,
+        method: 'PUT',
+        data: updateData
     })
-    .then(function(){
-        $.ajax({
-            url: `/api/todos/${todoId}`,
-            method: 'put',
-            data: {'completed': !isTodoCompleted}
-        })
-        .then(function(data){
-            console.log(data);
-        })
-    })
-    .then(function(){
+    // sync todoState in jQuery data 
+    .then(function(updatedTodo){
         todoTag.toggleClass('done');
+        todoTag.data('completed', flipTodoState);
     });
 
 }
